@@ -1,104 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FBZone Worldwide</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBZone - Secure Login</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#0f0f0f;color:white;min-height:100vh}
-.top{padding:10px;text-align:center;background:#000;border-bottom:2px solid #ffcc00;position:sticky;top:0;z-index:10}
-.top h1{color:#ffcc00;letter-spacing:2px;font-size:28px}
-.top span{color:#888;font-size:12px}
-.card{max-width:480px;margin:20px auto;background:#1a1a1a;border-radius:14px;padding:16px;border:1px solid #333}
-input,select,textarea{width:100%;padding:14px;margin:8px 0;background:#222;border:1px solid #444;color:white;border-radius:8px;font-size:16px}
-button{width:100%;padding:14px;background:#ffcc00;color:black;border:none;border-radius:8px;font-size:17px;cursor:pointer;margin-top:8px;font-weight:bold}
-button:active{transform:scale(0.97)}
-.post{background:#222;padding:12px;border-radius:10px;margin:10px 0;border-left:4px solid #ffcc00}
-.post b{color:#ffcc00}
+.top{padding:12px;text-align:center;background:#000;border-bottom:3px solid #ffcc00;position:sticky;top:0;z-index:10}
+.top h1{color:#ffcc00;letter-spacing:3px;font-size:30px}
+.card{max-width:500px;margin:16px auto;background:#1a1a1a;border-radius:14px;padding:16px;border:1px solid #333}
+input,select{width:100%;padding:13px;margin:7px 0;background:#222;border:1px solid #444;color:white;border-radius:8px;font-size:15px}
+button{width:100%;padding:14px;background:#ffcc00;color:black;border:none;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:8px}
+.post{background:#222;padding:12px;border-radius:12px;margin:12px 0;border-left:4px solid #ffcc00}
+.post img{width:100%;border-radius:10px;margin-top:8px}
 .meta{font-size:11px;color:#888;margin-top:6px}
-.fire{background:#333;color:#ffcc00;padding:4px 10px;border-radius:20px;border:none;width:auto;font-size:14px;margin-top:8px;cursor:pointer}
-#status{text-align:center;padding:8px;color:#0f0;font-size:12px}
+.fire{background:#333;color:#ffcc00;padding:6px 12px;border-radius:20px;border:none;width:auto;font-size:13px;margin-top:8px}
+#status{text-align:center;padding:8px;font-size:12px;color:#0f0}
+.row{display:flex;gap:8px}.row> *{flex:1}
+.verified{color:#0f0;font-size:12px;text-align:center;margin:8px 0}
+.codeBox{letter-spacing:8px;font-size:24px;text-align:center;font-weight:bold}
 </style>
 </head>
 <body>
-<div class="top">
-<h1>FBZONE</h1>
-<span>WORLDWIDE 🌍 - Tamale to the World</span>
+<div class="top"><h1>FBZONE</h1><span style="color:#888;font-size:12px">SECURE WORLDWIDE 🌍 VERIFIED LOGIN</span></div>
+
+<!-- STEP 1 LOGIN -->
+<div class="card" id="loginCard">
+<div id="status">✅ Worldwide Secure API Live</div>
+<h3 style="color:#ffcc00;text-align:center;margin:12px 0">Create / Login Account</h3>
+<input id="name" placeholder="Full Name *">
+<div class="row">
+<input id="email" placeholder="Email (or leave blank)">
+<input id="contact" placeholder="Contact e.g. +233...">
+</div>
+<div class="row">
+<input id="age" type="number" placeholder="Age *">
+<select id="sex"><option value="">Sex *</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
+</div>
+<div class="row">
+<select id="country">
+<option value="">Country *</option>
+<option value="Ghana">Ghana</option><option value="Nigeria">Nigeria</option><option value="Togo">Togo</option><option value="Burkina Faso">Burkina Faso</option><option value="Ivory Coast">Ivory Coast</option>
+<option value="UK">UK</option><option value="USA">USA</option><option value="Other">Other</option>
+</select>
+<select id="zone"><option value="tamale">Tamale Zone</option><option value="accra">Accra Zone</option><option value="kumasi">Kumasi Zone</option><option value="lagos">Lagos Zone</option><option value="global">Global Zone</option></select>
+</div>
+<button onclick="sendCode()">SEND VERIFICATION CODE 📱</button>
+<p style="font-size:11px;color:#888;text-align:center;margin-top:8px">Code valid for 10 minutes. We will show code here for testing.</p>
 </div>
 
-<div class="card">
-<div id="status">Connecting to worldwide...</div>
-<input id="user" placeholder="Your name (e.g. Wunizooya)">
-<select id="zone">
-<option value="tamale">Tamale Zone</option>
-<option value="accra">Accra Zone</option>
-<option value="kumasi">Kumasi Zone</option>
-<option value="global">Global Zone</option>
-</select>
-<textarea id="text" placeholder="What's happening in your zone?"></textarea>
+<!-- STEP 2 VERIFY -->
+<div class="card" id="verifyCard" style="display:none">
+<h3 style="color:#ffcc00;text-align:center">Enter Verification Code</h3>
+<p id="sentTo" style="text-align:center;color:#888;font-size:13px;margin:8px 0"></p>
+<p id="showCode" style="text-align:center;color:#ffcc00;font-size:14px;background:#222;padding:8px;border-radius:8px"></p>
+<input id="codeInput" placeholder="Enter 6-digit code" class="codeBox" maxlength="6">
+<button onclick="verifyCode()">VERIFY & LOGIN ✅</button>
+<button style="background:#333;color:white" onclick="backToLogin()">← Back</button>
+</div>
+
+<!-- MAIN APP -->
+<div class="card" id="mainCard" style="display:none">
+<div style="display:flex;justify-content:space-between;background:#111;padding:8px 12px;border-radius:8px;margin-bottom:10px">
+<div><b id="userDisplay"></b><br><small id="userMeta" style="color:#888;font-size:11px"></small></div>
+<button style="width:auto;padding:6px 10px;background:#333;color:white;font-size:12px" onclick="logout()">Logout</button>
+</div>
+<select id="postZone"><option value="tamale">Tamale Zone</option><option value="accra">Accra Zone</option><option value="kumasi">Kumasi Zone</option><option value="global">Global Zone</option></select>
+<textarea id="text" placeholder="What's happening?" style="width:100%;padding:13px;margin:7px 0;background:#222;border:1px solid #444;color:white;border-radius:8px"></textarea>
+<input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
+<img id="preview" style="width:100%;border-radius:8px;display:none;margin:8px 0">
 <button onclick="postNow()">POST TO WORLDWIDE 🌍</button>
 </div>
 
-<div class="card" id="feed"></div>
+<div class="card" id="feedCard"><div id="feed"></div></div>
 
 <script>
-const API = "https://bm-2-app.vercel.app/api/posts";
+const API="https://bm-2-app.vercel.app";
+let tempKey="", tempImg="", currentUser=null;
 
-async function loadPosts(){
-  document.getElementById("status").innerText = "🌍 Loading worldwide posts...";
-  try{
-    const res = await fetch(API);
-    const posts = await res.json();
-    document.getElementById("status").innerText = `✅ Worldwide Live - ${posts.length} posts`;
-    render(posts);
-  }catch(e){
-    document.getElementById("status").innerText = "❌ Backend offline, check: " + API;
-  }
+function getStoredUser(){return JSON.parse(localStorage.getItem("fbzone_user_v2")||"null");}
+function saveUser(u){localStorage.setItem("fbzone_user_v2",JSON.stringify(u));localStorage.setItem("fbzone_token",u.id);}
+function checkLogin(){const u=getStoredUser(); if(u){currentUser=u; showMain();}}
+checkLogin();
+
+async function sendCode(){
+ const name=document.getElementById("name").value.trim();
+ const email=document.getElementById("email").value.trim();
+ const contact=document.getElementById("contact").value.trim();
+ const age=document.getElementById("age").value.trim();
+ const country=document.getElementById("country").value;
+ const sex=document.getElementById("sex").value;
+ if(!name||!age||!country||!sex){alert("Fill all * fields");return}
+ if(!email&&!contact){alert("Enter email OR contact");return}
+ try{
+  document.getElementById("status").innerText="Sending code...";
+  const res=await fetch(`${API}/api/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,contact,age,country,sex})});
+  const data=await res.json();
+  if(!res.ok) throw new Error(data.error);
+  tempKey=data.key;
+  document.getElementById("loginCard").style.display="none";
+  document.getElementById("verifyCard").style.display="block";
+  document.getElementById("sentTo").innerText=`Code sent to: ${tempKey}`;
+  document.getElementById("showCode").innerText=`TEST CODE: ${data.code} (In real app, sent via SMS/Email)`;
+ }catch(e){alert(e.message);document.getElementById("status").innerText="Error: "+e.message;}
 }
+function backToLogin(){document.getElementById("verifyCard").style.display="none";document.getElementById("loginCard").style.display="block";}
 
-function render(posts){
-  const feed = document.getElementById("feed");
-  feed.innerHTML = posts.map((p,i)=>`
-    <div class="post">
-      <b>${p.user}</b> <small style="color:#888">from ${p.zone}</small><br>
-      ${p.text}
-      <div class="meta">${p.time} - 🔥 ${p.fire||0} fires</div>
-      <button class="fire" onclick="addFire(${i})">🔥 Fire (${p.fire||0})</button>
-    </div>
-  `).join("") || "<p style='text-align:center;color:#888'>No posts yet. Be first!</p>";
+async function verifyCode(){
+ const code=document.getElementById("codeInput").value.trim();
+ if(code.length!==6){alert("Enter 6 digits");return}
+ try{
+  const res=await fetch(`${API}/api/auth/verify`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:tempKey,code})});
+  const data=await res.json();
+  if(!res.ok) throw new Error(data.error);
+  currentUser=data.user; saveUser(currentUser);
+  showMain();
+ }catch(e){alert(e.message);}
 }
-
-async function postNow(){
-  const user = document.getElementById("user").value || "Anonymous";
-  const zone = document.getElementById("zone").value;
-  const text = document.getElementById("text").value;
-  if(!text.trim()){alert("Write something!");return}
-  
-  document.getElementById("status").innerText = "Posting worldwide...";
-  try{
-    const res = await fetch(API,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({user,zone,text})
-    });
-    const data = await res.json();
-    document.getElementById("text").value = "";
-    document.getElementById("status").innerText = "✅ Posted worldwide!";
-    render(data.posts);
-  }catch(e){
-    alert("Failed to post. Check backend: "+API);
-  }
+function showMain(){
+ document.getElementById("loginCard").style.display="none";
+ document.getElementById("verifyCard").style.display="none";
+ document.getElementById("mainCard").style.display="block";
+ document.getElementById("userDisplay").innerText=currentUser.name;
+ document.getElementById("userMeta").innerText=`${currentUser.age}y • ${currentUser.sex} • ${currentUser.country} • ${currentUser.email||currentUser.contact}`;
+ loadPosts();
 }
-
-async function addFire(id){
-  try{
-    await fetch(`${API}/${id}/fire`,{method:"POST"});
-    loadPosts();
-  }catch(e){}
-}
-
-loadPosts();
+function logout(){localStorage.removeItem("fbzone_user_v2");localStorage.removeItem("fbzone_token");location.reload();}
+function previewImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{tempImg=ev.target.result;const p=document.getElementById("preview");p.src=tempImg;p.style.display="block";};r.readAsDataURL(f);}
+async function loadPosts(){try{const res=await fetch(`${API}/api/posts`);const posts=await res.json();render(posts);}catch(e){}}
+function render(posts){document.getElementById("feed").innerHTML=posts.map((p,i)=>`<div class="post"><b style="color:#ffcc00">${p.user}</b> <small style="color:#888">from ${p.zone}</small><br>${p.text}${p.image?`<img src="${p.image}">`:""}<div class="meta">${p.time} - 🔥 ${p.fire||0}</div><button class="fire" onclick="addFire(${i})">🔥 Fire (${p.fire||0})</button></div>`).join("")||"<p style='text-align:center;color:#888'>No posts yet</p>";}
+async function postNow(){const zone=document.getElementById("postZone").value;const text=document.getElementById("text").value.trim();if(!text){alert("Write something");return}try{const res=await fetch(`${API}/api/posts`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user:currentUser.name,zone,text,image:tempImg})});const data=await res.json();document.getElementById("text").value="";tempImg="";document.getElementById("preview").style.display="none";render(data.posts);}catch(e){}}
+async function addFire(i){try{await fetch(`${API}/api/posts/${i}/fire`,{method:"POST"});loadPosts();}catch(e){}}
 </script>
 </body>
 </html>
