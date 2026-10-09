@@ -1,96 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>bZone Worldwide</title>
+<title>FBZone Worldwide</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#0f0f0f;color:#fff;padding:10px;text-align:center}
-header{background:#000;border-bottom:2px solid #ffcc00;position:sticky;top:0;z-index:9;padding:12px}
-h1{color:#ffcc00;letter-spacing:2px;font-size:28px}
-h1 span{color:#888;font-size:12px;display:block}
-.card{max-width:400px;margin:20px auto;background:#1a1a1a;border-radius:14px;padding:20px;border:1px solid #2a2a2a;text-align:left}
-input,select,textarea{width:100%;padding:14px;margin:8px 0;background:#222;border:1px solid #333;border-radius:8px;color:#fff;font-size:14px}
-button{width:100%;padding:14px;background:#ffcc00;color:#000;border:none;border-radius:10px;font-weight:bold;font-size:17px;cursor:pointer}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#0f0f0f;color:white;min-height:100vh}
+.top{padding:10px;text-align:center;background:#000;border-bottom:2px solid #ffcc00;position:sticky;top:0;z-index:10}
+.top h1{color:#ffcc00;letter-spacing:2px;font-size:28px}
+.top span{color:#888;font-size:12px}
+.card{max-width:480px;margin:20px auto;background:#1a1a1a;border-radius:14px;padding:16px;border:1px solid #333}
+input,select,textarea{width:100%;padding:14px;margin:8px 0;background:#222;border:1px solid #444;color:white;border-radius:8px;font-size:16px}
+button{width:100%;padding:14px;background:#ffcc00;color:black;border:none;border-radius:8px;font-size:17px;cursor:pointer;margin-top:8px;font-weight:bold}
 button:active{transform:scale(0.97)}
-.small{color:#ffcc00;text-align:center;margin-top:15px;cursor:pointer;font-size:14px}
-.zone-tag{display:inline-block;background:#222;border:1px solid #ffcc00;padding:3px 12px;border-radius:5px;font-size:12px;margin-left:6px}
-.post{background:#222;border:1px solid #333;border-radius:12px;padding:14px;margin:12px 0;border-left:3px solid #ffcc00}
+.post{background:#222;padding:12px;border-radius:10px;margin:10px 0;border-left:4px solid #ffcc00}
 .post b{color:#ffcc00}
-.fire-btn{background:#2a2a2a;color:#ffcc00;border:1px solid #333;padding:6px 14px;border-radius:20px;width:auto;display:inline-block;margin-top:8px;cursor:pointer}
-.hidden{display:none}
-#status{font-size:12px;color:#777;text-align:center;padding:8px}
+.meta{font-size:11px;color:#888;margin-top:6px}
+.fire{background:#333;color:#ffcc00;padding:4px 10px;border-radius:20px;border:none;width:auto;font-size:14px;margin-top:8px;cursor:pointer}
+#status{text-align:center;padding:8px;color:#0f0;font-size:12px}
 </style>
 </head>
 <body>
-<header><h1>FBZONE<span>Worldwide Community</span></h1></header>
-<div id="status"></div>
-
-<div id="loginPage" class="card">
-<h3 style="text-align:center;margin-bottom:12px">Join FBZone</h3>
-<input id="userNameInput" placeholder="Your Name">
-<input id="userZoneInput" placeholder="Your Zone (e.g. Accra)">
-<button onclick="login()">Enter Zone</button>
-<div class="small" onclick="document.getElementById('loginPage').classList.add('hidden');document.getElementById('feedPage').classList.remove('hidden');loadPosts()">Skip Login</div>
+<div class="top">
+<h1>FBZONE</h1>
+<span>WORLDWIDE 🌍 - Tamale to the World</span>
 </div>
 
-<div id="feedPage" class="hidden">
 <div class="card">
-<div style="display:flex;justify-content:space-between"><b id="userName">Guest</b><span id="userZone" style="color:#ffcc00;font-size:12px"></span></div>
-<textarea id="postInput" placeholder="What's happening in your zone?" rows="3"></textarea>
-<button onclick="createPost()">Post to Zone</button>
+<div id="status">Connecting to worldwide...</div>
+<input id="user" placeholder="Your name (e.g. Wunizooya)">
+<select id="zone">
+<option value="tamale">Tamale Zone</option>
+<option value="accra">Accra Zone</option>
+<option value="kumasi">Kumasi Zone</option>
+<option value="global">Global Zone</option>
+</select>
+<textarea id="text" placeholder="What's happening in your zone?"></textarea>
+<button onclick="postNow()">POST TO WORLDWIDE 🌍</button>
 </div>
-<div class="card"><div id="posts"></div></div>
-</div>
+
+<div class="card" id="feed"></div>
 
 <script>
-let currentUser=null;
-function login(){
-let name=document.getElementById('userNameInput').value.trim();
-let zone=document.getElementById('userZoneInput').value.trim();
-if(!name)return alert('Enter name');
-currentUser={name,zone:zone||'Global'};
-localStorage.setItem('fbzone_user',JSON.stringify(currentUser));
-document.getElementById('loginPage').classList.add('hidden');
-document.getElementById('feedPage').classList.remove('hidden');
-document.getElementById('userName').innerText=currentUser.name;
-document.getElementById('userZone').innerText=currentUser.zone;
+const API = "https://bm-2-app.vercel.app/api/posts";
+
+async function loadPosts(){
+  document.getElementById("status").innerText = "🌍 Loading worldwide posts...";
+  try{
+    const res = await fetch(API);
+    const posts = await res.json();
+    document.getElementById("status").innerText = `✅ Worldwide Live - ${posts.length} posts`;
+    render(posts);
+  }catch(e){
+    document.getElementById("status").innerText = "❌ Backend offline, check: " + API;
+  }
+}
+
+function render(posts){
+  const feed = document.getElementById("feed");
+  feed.innerHTML = posts.map((p,i)=>`
+    <div class="post">
+      <b>${p.user}</b> <small style="color:#888">from ${p.zone}</small><br>
+      ${p.text}
+      <div class="meta">${p.time} - 🔥 ${p.fire||0} fires</div>
+      <button class="fire" onclick="addFire(${i})">🔥 Fire (${p.fire||0})</button>
+    </div>
+  `).join("") || "<p style='text-align:center;color:#888'>No posts yet. Be first!</p>";
+}
+
+async function postNow(){
+  const user = document.getElementById("user").value || "Anonymous";
+  const zone = document.getElementById("zone").value;
+  const text = document.getElementById("text").value;
+  if(!text.trim()){alert("Write something!");return}
+  
+  document.getElementById("status").innerText = "Posting worldwide...";
+  try{
+    const res = await fetch(API,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({user,zone,text})
+    });
+    const data = await res.json();
+    document.getElementById("text").value = "";
+    document.getElementById("status").innerText = "✅ Posted worldwide!";
+    render(data.posts);
+  }catch(e){
+    alert("Failed to post. Check backend: "+API);
+  }
+}
+
+async function addFire(id){
+  try{
+    await fetch(`${API}/${id}/fire`,{method:"POST"});
+    loadPosts();
+  }catch(e){}
+}
+
 loadPosts();
-}
-function createPost(){
-let txt=document.getElementById('postInput').value.trim();
-if(!txt)return;
-let all=JSON.parse(localStorage.getItem('fbzone_posts')||'[]');
-all.unshift({user:currentUser?currentUser.name:'Guest',zone:currentUser?currentUser.zone:'Global',text:txt,fire:0,time:new Date().toLocaleString()});
-localStorage.setItem('fbzone_posts',JSON.stringify(all));
-document.getElementById('postInput').value='';
-loadPosts();
-}
-function loadPosts(){
-let cont=document.getElementById('posts');
-let all=JSON.parse(localStorage.getItem('fbzone_posts')||'[]');
-if(all.length==0){cont.innerHTML='<p style="text-align:center;color:#666;margin-top:20px">No posts in the zone yet. Be first!</p>';return;}
-cont.innerHTML=all.map((p,i)=>`<div class="post"><b>${p.user}</b> <span class="zone-tag">${p.zone}</span><div style="margin:8px 0">${p.text}</div><div style="font-size:11px;color:#666">${p.time}</div><div class="fire-btn" onclick="addFire(${i})">🔥 ${p.fire||0} Fire</div></div>`).join('');
-}
-function addFire(i){
-let all=JSON.parse(localStorage.getItem('fbzone_posts')||'[]');
-all[i].fire=(all[i].fire||0)+1;
-localStorage.setItem('fbzone_posts',JSON.stringify(all));
-loadPosts();
-}
-let saved=localStorage.getItem('fbzone_user');
-if(saved){
-try{
-let u=JSON.parse(saved);
-currentUser=u;
-document.getElementById('loginPage').classList.add('hidden');
-document.getElementById('feedPage').classList.remove('hidden');
-document.getElementById('userName').innerText=u.name;
-document.getElementById('userZone').innerText=u.zone;
-loadPosts();
-}catch(e){}
-}
 </script>
 </body>
 </html>
