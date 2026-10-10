@@ -6,131 +6,120 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#0f0f0f;color:white;min-height:100vh}
-.top{padding:12px;text-align:center;background:#000;border-bottom:3px solid #ffcc00;position:sticky;top:0;z-index:10}
+.top{padding:12px;text-align:center;background:#000;border-bottom:3px solid #ffcc00}
 .top h1{color:#ffcc00;letter-spacing:3px;font-size:30px}
-.card{max-width:500px;margin:16px auto;background:#1a1a1a;border-radius:14px;padding:16px;border:1px solid #333}
-input,select{width:100%;padding:13px;margin:7px 0;background:#222;border:1px solid #444;color:white;border-radius:8px;font-size:15px}
-button{width:100%;padding:14px;background:#ffcc00;color:black;border:none;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:8px}
-.post{background:#222;padding:12px;border-radius:12px;margin:12px 0;border-left:4px solid #ffcc00}
+.card{max-width:500px;margin:16px auto;background:#1a1a1a;border-radius:14px;padding:18px;border:1px solid #333}
+input,select{width:100%;padding:13px;margin:7px 0;background:#222;border:1px solid #333;border-radius:10px;color:white;font-size:16px}
+button{width:100%;padding:14px;background:#ffcc00;color:black;border:none;border-radius:10px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:8px}
+button:disabled{opacity:0.6}
+.post{background:#222;padding:12px;border-radius:12px;margin:12px 0;border:1px solid #333}
 .post img{width:100%;border-radius:10px;margin-top:8px}
 .meta{font-size:11px;color:#888;margin-top:6px}
-.fire{background:#333;color:#ffcc00;padding:6px 12px;border-radius:20px;border:none;width:auto;font-size:13px;margin-top:8px}
+.fire{background:#333;color:#ffcc00;padding:6px 12px;border-radius:20px;border:none;cursor:pointer;font-size:12px}
 #status{text-align:center;padding:8px;font-size:12px;color:#0f0}
-.row{display:flex;gap:8px}.row> *{flex:1}
-.verified{color:#0f0;font-size:12px;text-align:center;margin:8px 0}
-.codeBox{letter-spacing:8px;font-size:24px;text-align:center;font-weight:bold}
+.row{display:flex;gap:8px}.row *{flex:1}
+.small{font-size:12px;color:#888;text-align:center;margin-top:8px}
+.green{color:#22c55e;font-size:13px;text-align:center}
 </style>
 </head>
 <body>
-<div class="top"><h1>FBZONE</h1><span style="color:#888;font-size:12px">SECURE WORLDWIDE 🌍 VERIFIED LOGIN</span></div>
+<div class="top"><h1>FBZONE</h1></div>
 
-<!-- STEP 1 LOGIN -->
-<div class="card" id="loginCard">
-<div id="status">✅ Worldwide Secure API Live</div>
-<h3 style="color:#ffcc00;text-align:center;margin:12px 0">Create / Login Account</h3>
-<input id="name" placeholder="Full Name *">
-<div class="row">
-<input id="email" placeholder="Email (or leave blank)">
-<input id="contact" placeholder="Contact e.g. +233...">
-</div>
-<div class="row">
-<input id="age" type="number" placeholder="Age *">
-<select id="sex"><option value="">Sex *</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
-</div>
-<div class="row">
-<select id="country">
-<option value="">Country *</option>
-<option value="Ghana">Ghana</option><option value="Nigeria">Nigeria</option><option value="Togo">Togo</option><option value="Burkina Faso">Burkina Faso</option><option value="Ivory Coast">Ivory Coast</option>
-<option value="UK">UK</option><option value="USA">USA</option><option value="Other">Other</option>
-</select>
-<select id="zone"><option value="tamale">Tamale Zone</option><option value="accra">Accra Zone</option><option value="kumasi">Kumasi Zone</option><option value="lagos">Lagos Zone</option><option value="global">Global Zone</option></select>
-</div>
-<button onclick="sendCode()">SEND VERIFICATION CODE 📱</button>
-<p style="font-size:11px;color:#888;text-align:center;margin-top:8px">Code valid for 10 minutes. We will show code here for testing.</p>
+<div class="card" id="authCard">
+  <h2 style="text-align:center;margin-bottom:12px">Create / Login Account</h2>
+  
+  <div id="step1">
+    <input id="email" type="email" placeholder="Enter your Gmail (e.g. name@gmail.com)">
+    <input id="name" type="text" placeholder="Your Full Name (for new account)">
+    <button id="sendBtn" onclick="sendCode()">SEND VERIFICATION CODE</button>
+    <div class="small">Code valid for 10 minutes. Check your email inbox and spam folder.</div>
+  </div>
+
+  <div id="step2" style="display:none">
+    <p class="green" id="sentMsg">Code sent!</p>
+    <input id="code" type="text" placeholder="Enter 6-digit code from email" maxlength="6">
+    <button id="verifyBtn" onclick="verifyCode()">VERIFY & LOGIN</button>
+    <div class="small">Didn't get code? Wait 1 min and resend.</div>
+    <button onclick="backToStep1()" style="background:#333;color:white;margin-top:8px">Back</button>
+  </div>
+
+  <div id="status"></div>
 </div>
 
-<!-- STEP 2 VERIFY -->
-<div class="card" id="verifyCard" style="display:none">
-<h3 style="color:#ffcc00;text-align:center">Enter Verification Code</h3>
-<p id="sentTo" style="text-align:center;color:#888;font-size:13px;margin:8px 0"></p>
-<p id="showCode" style="text-align:center;color:#ffcc00;font-size:14px;background:#222;padding:8px;border-radius:8px"></p>
-<input id="codeInput" placeholder="Enter 6-digit code" class="codeBox" maxlength="6">
-<button onclick="verifyCode()">VERIFY & LOGIN ✅</button>
-<button style="background:#333;color:white" onclick="backToLogin()">← Back</button>
+<div class="card" id="feedCard" style="display:none">
+  <h3>Welcome to FBZone! 🔥</h3>
+  <div id="posts"></div>
 </div>
-
-<!-- MAIN APP -->
-<div class="card" id="mainCard" style="display:none">
-<div style="display:flex;justify-content:space-between;background:#111;padding:8px 12px;border-radius:8px;margin-bottom:10px">
-<div><b id="userDisplay"></b><br><small id="userMeta" style="color:#888;font-size:11px"></small></div>
-<button style="width:auto;padding:6px 10px;background:#333;color:white;font-size:12px" onclick="logout()">Logout</button>
-</div>
-<select id="postZone"><option value="tamale">Tamale Zone</option><option value="accra">Accra Zone</option><option value="kumasi">Kumasi Zone</option><option value="global">Global Zone</option></select>
-<textarea id="text" placeholder="What's happening?" style="width:100%;padding:13px;margin:7px 0;background:#222;border:1px solid #444;color:white;border-radius:8px"></textarea>
-<input type="file" id="imgFile" accept="image/*" onchange="previewImg(event)">
-<img id="preview" style="width:100%;border-radius:8px;display:none;margin:8px 0">
-<button onclick="postNow()">POST TO WORLDWIDE 🌍</button>
-</div>
-
-<div class="card" id="feedCard"><div id="feed"></div></div>
 
 <script>
-const API="https://bm-2-app.vercel.app";
-let tempKey="", tempImg="", currentUser=null;
+const API = "https://bm2-app-xxxxx.onrender.com"; // <-- YOUR BACKEND URL KEEP AS IT WAS
 
-function getStoredUser(){return JSON.parse(localStorage.getItem("fbzone_user_v2")||"null");}
-function saveUser(u){localStorage.setItem("fbzone_user_v2",JSON.stringify(u));localStorage.setItem("fbzone_token",u.id);}
-function checkLogin(){const u=getStoredUser(); if(u){currentUser=u; showMain();}}
-checkLogin();
+let currentEmail = "";
 
 async function sendCode(){
- const name=document.getElementById("name").value.trim();
- const email=document.getElementById("email").value.trim();
- const contact=document.getElementById("contact").value.trim();
- const age=document.getElementById("age").value.trim();
- const country=document.getElementById("country").value;
- const sex=document.getElementById("sex").value;
- if(!name||!age||!country||!sex){alert("Fill all * fields");return}
- if(!email&&!contact){alert("Enter email OR contact");return}
- try{
-  document.getElementById("status").innerText="Sending code...";
-  const res=await fetch(`${API}/api/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,contact,age,country,sex})});
-  const data=await res.json();
-  if(!res.ok) throw new Error(data.error);
-  tempKey=data.key;
-  document.getElementById("loginCard").style.display="none";
-  document.getElementById("verifyCard").style.display="block";
-  document.getElementById("sentTo").innerText=`Code sent to: ${tempKey}`;
-  document.getElementById("showCode").innerText=`TEST CODE: ${data.code} (In real app, sent via SMS/Email)`;
- }catch(e){alert(e.message);document.getElementById("status").innerText="Error: "+e.message;}
+  const email = document.getElementById('email').value.trim();
+  const name = document.getElementById('name').value.trim();
+  if(!email){ alert('Enter email'); return; }
+  currentEmail = email;
+  document.getElementById('status').innerText = "Sending code...";
+  document.getElementById('sendBtn').disabled = true;
+  try{
+    const res = await fetch(`${API}/api/auth/send-code`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email, name})
+    });
+    const data = await res.json();
+    if(res.ok){
+      document.getElementById('step1').style.display='none';
+      document.getElementById('step2').style.display='block';
+      document.getElementById('sentMsg').innerText = `Code sent to ${email} - Check inbox & spam`;
+      document.getElementById('status').innerText = "";
+    } else {
+      document.getElementById('status').innerText = data.message || "Failed to send";
+    }
+  }catch(e){
+    document.getElementById('status').innerText = "Network error, try again";
+  }
+  document.getElementById('sendBtn').disabled = false;
 }
-function backToLogin(){document.getElementById("verifyCard").style.display="none";document.getElementById("loginCard").style.display="block";}
 
 async function verifyCode(){
- const code=document.getElementById("codeInput").value.trim();
- if(code.length!==6){alert("Enter 6 digits");return}
- try{
-  const res=await fetch(`${API}/api/auth/verify`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({key:tempKey,code})});
-  const data=await res.json();
-  if(!res.ok) throw new Error(data.error);
-  currentUser=data.user; saveUser(currentUser);
-  showMain();
- }catch(e){alert(e.message);}
+  const code = document.getElementById('code').value.trim();
+  if(!code){ alert('Enter code'); return; }
+  document.getElementById('status').innerText = "Verifying...";
+  try{
+    const res = await fetch(`${API}/api/auth/verify-code`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email: currentEmail, code})
+    });
+    const data = await res.json();
+    if(res.ok){
+      localStorage.setItem('fbzone_user', JSON.stringify(data.user));
+      localStorage.setItem('fbzone_token', data.token);
+      document.getElementById('authCard').style.display='none';
+      document.getElementById('feedCard').style.display='block';
+      document.getElementById('status').innerText = "";
+    } else {
+      document.getElementById('status').innerText = data.message || "Wrong code";
+    }
+  }catch(e){
+    document.getElementById('status').innerText = "Network error";
+  }
 }
-function showMain(){
- document.getElementById("loginCard").style.display="none";
- document.getElementById("verifyCard").style.display="none";
- document.getElementById("mainCard").style.display="block";
- document.getElementById("userDisplay").innerText=currentUser.name;
- document.getElementById("userMeta").innerText=`${currentUser.age}y • ${currentUser.sex} • ${currentUser.country} • ${currentUser.email||currentUser.contact}`;
- loadPosts();
+
+function backToStep1(){
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step1').style.display='block';
 }
-function logout(){localStorage.removeItem("fbzone_user_v2");localStorage.removeItem("fbzone_token");location.reload();}
-function previewImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{tempImg=ev.target.result;const p=document.getElementById("preview");p.src=tempImg;p.style.display="block";};r.readAsDataURL(f);}
-async function loadPosts(){try{const res=await fetch(`${API}/api/posts`);const posts=await res.json();render(posts);}catch(e){}}
-function render(posts){document.getElementById("feed").innerHTML=posts.map((p,i)=>`<div class="post"><b style="color:#ffcc00">${p.user}</b> <small style="color:#888">from ${p.zone}</small><br>${p.text}${p.image?`<img src="${p.image}">`:""}<div class="meta">${p.time} - 🔥 ${p.fire||0}</div><button class="fire" onclick="addFire(${i})">🔥 Fire (${p.fire||0})</button></div>`).join("")||"<p style='text-align:center;color:#888'>No posts yet</p>";}
-async function postNow(){const zone=document.getElementById("postZone").value;const text=document.getElementById("text").value.trim();if(!text){alert("Write something");return}try{const res=await fetch(`${API}/api/posts`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({user:currentUser.name,zone,text,image:tempImg})});const data=await res.json();document.getElementById("text").value="";tempImg="";document.getElementById("preview").style.display="none";render(data.posts);}catch(e){}}
-async function addFire(i){try{await fetch(`${API}/api/posts/${i}/fire`,{method:"POST"});loadPosts();}catch(e){}}
+
+// Auto login if already logged
+const saved = localStorage.getItem('fbzone_user');
+if(saved){
+  document.getElementById('authCard').style.display='none';
+  document.getElementById('feedCard').style.display='block';
+}
 </script>
 </body>
 </html>
